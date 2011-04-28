@@ -100,6 +100,14 @@ __PACKAGE__->has_many(
 # Created by DBIx::Class::Schema::Loader v0.07010 @ 2011-04-28 19:07:31
 # DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:vlW7T9GgtTXw9qk3gZFUkA
 
+# many_to_many():
+#   args:
+#     1) Name of relationship, DBIC will create accessor with this name
+#     2) Name of has_many() relationship this many_to_many() is shortcut for
+#     3) Name of belongs_to() relationship in model class of has_many() above
+#   You must already have the has_many() defined to use a many_to_many().
+
+__PACKAGE__->many_to_many(roles => 'user_roles', 'role');
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration
 __PACKAGE__->meta->make_immutable;

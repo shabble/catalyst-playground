@@ -22,6 +22,12 @@ use Catalyst
    'ConfigLoader',
    'Static::Simple',
    'StackTrace',
+
+   'Authentication',
+
+   'Session',
+   'Session::Store::FastMmap',
+   'Session::State::Cookie',
   );
 
 
