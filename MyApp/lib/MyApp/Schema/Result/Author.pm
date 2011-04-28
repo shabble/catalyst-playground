@@ -72,6 +72,7 @@ __PACKAGE__->has_many(
 # Created by DBIx::Class::Schema::Loader v0.07010 @ 2011-04-28 08:14:16
 # DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:55T3c1+d7MIZobGbA6khqg
 
+__PACKAGE__->many_to_many(books => 'book_authors', 'book');
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration
 __PACKAGE__->meta->make_immutable;

@@ -41,7 +41,13 @@ Standard 404 error page
 
 sub default :Path {
     my ( $self, $c ) = @_;
-    $c->response->body( 'Page not found' );
+    $c->response->body( '404: Page not found' );
+    $c->response->status(404);
+}
+
+sub page_not_found :Path('/error_404') {
+    my ( $self, $c ) = @_;
+    $c->response->body( '404: Something terrible happened!' );
     $c->response->status(404);
 }
 
