@@ -27,7 +27,7 @@ sub index :Path :Args(0) {
     my ($self, $c) = @_;
 
     # Get the username and password from form
-    my $username = $c->request->params->{username};
+    my $username = $c->request->params->{uname};
     my $password = $c->request->params->{password};
 
     # If the username and password values were found in form

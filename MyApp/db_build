@@ -10,3 +10,5 @@ for sql in ${SQL_FILES}; do
 done
 
 echo "Finished importing database files"
+perl script/set_hashed_pw.pl
+echo "Hashed passwords using Bcrypt"

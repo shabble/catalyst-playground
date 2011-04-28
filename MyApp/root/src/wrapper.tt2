@@ -25,13 +25,12 @@
             <li><a href="[% c.uri_for('/logout') %]" title="logout">Logout</a></li>
         </ul>
     </div><!-- end menu -->
-    
     <div id="content">
-        [%# Status and error messages %]
-        <span class="message">[% status_msg or c.request.params.status_msg %]</span>
-        <span class="error">[% error_msg %]</span>
-        [%# This is where TT will stick all of your template's contents. -%]
-        [% content %]
+      [%# Status and error messages %]
+      <span class="message">[% status_msg %]</span>
+      <span class="error">[% error_msg %]</span>
+      [%# This is where TT will stick all of your template's contents. -%]
+      [% content %]
     </div><!-- end content -->
     </div><!-- end bodyblock -->
     

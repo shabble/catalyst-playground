@@ -44,11 +44,13 @@ our $VERSION = '0.01';
 # with an external configuration file acting as an override for
 # local deployment.
 
-__PACKAGE__->config(
-    name => 'MyApp',
-    # Disable deprecated behavior needed by old applications
-    disable_component_resolution_regex_fallback => 1,
-);
+__PACKAGE__->config
+  (
+   name => 'MyApp',
+   # Disable deprecated behavior needed by old applications
+   disable_component_resolution_regex_fallback => 1,
+   session => { flash_to_stash => 1 },
+  );
 
 # Configure SimpleDB Authentication
 __PACKAGE__->config->{'Plugin::Authentication'}
@@ -56,7 +58,7 @@ __PACKAGE__->config->{'Plugin::Authentication'}
      default => {
                  class           => 'SimpleDB',
                  user_model      => 'DB::User',
-                 password_type   => 'clear',
+                 password_type   => 'self_check',
                 },
     };
 
