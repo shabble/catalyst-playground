@@ -36,11 +36,14 @@ sub list : Local {
 
     # Retrieve all of the book records as book model objects and store in the
     # stash where they can be accessed by the TT template
-    my $rs = $c->model('DB::Book')->search({}, {order_by => 'title DESC'});
-    $c->stash(books => [$rs->all]); #[$c->model('DB::Book')->all]);
+    my $rs = $c->model('DB::Book')->search
+      ({},
+       {
+        order_by => 'title DESC',
+        prefetch => { 'book_authors' => 'author' },
+       });
 
-    # But, for now, use this code until we create the model later
-    #$c->stash(books => '');
+    $c->stash(books => [$rs->all]); #[$c->model('DB::Book')->all]);
 
     # Set the TT template to use.  You will almost always want to do this
     # in your action methods (action methods respond to user input in
@@ -186,6 +189,56 @@ sub delete :Chained('object') :PathPart('delete') :Args(0) {
     $c->response->redirect($c->uri_for($self->action_for('list'),
                                        {status_msg => "Book deleted."}));
 }
+
+=head2 list_recent
+
+List recently created books
+
+=cut
+
+sub list_recent :Chained('base') :PathPart('list_recent') :Args(1) {
+    my ($self, $c, $mins) = @_;
+
+    # Retrieve all of the book records as book model objects and store in the
+    # stash where they can be accessed by the TT template, but only
+    # retrieve books created within the last $min number of minutes
+    $c->stash(books =>
+              [$c->model('DB::Book')
+               ->created_after(DateTime->now->subtract(minutes => $mins))]);
+
+    # Set the TT template to use.  You will almost always want to do this
+    # in your action methods (action methods respond to user input in
+    # your controllers).
+    $c->stash(title => "Bacon");
+    $c->stash(template => 'books/list.tt2');
+}
+
+
+=head2 list_recent_tcp
+
+List recently created books
+
+=cut
+
+sub list_recent_tcp :Chained('base') :PathPart('list_recent_tcp') :Args(1) {
+    my ($self, $c, $mins) = @_;
+
+    # Retrieve all of the book records as book model objects and store in the
+    # stash where they can be accessed by the TT template, but only
+    # retrieve books created within the last $min number of minutes
+    # AND that have 'TCP' in the title
+    $c->stash(books =>
+              [$c->model('DB::Book')
+               ->created_after(DateTime->now->subtract(minutes => $mins))
+               ->title_like('TCP')
+              ]);
+
+    # Set the TT template to use.  You will almost always want to do this
+    # in your action methods (action methods respond to user input in
+    # your controllers).
+    $c->stash(template => 'books/list.tt2');
+}
+
 
 =head1 AUTHOR
 

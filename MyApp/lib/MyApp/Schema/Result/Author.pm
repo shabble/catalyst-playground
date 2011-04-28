@@ -11,7 +11,7 @@ use MooseX::NonMoose;
 use namespace::autoclean;
 extends 'DBIx::Class::Core';
 
-__PACKAGE__->load_components("InflateColumn::DateTime");
+__PACKAGE__->load_components("InflateColumn::DateTime", "TimeStamp");
 
 =head1 NAME
 
@@ -69,10 +69,20 @@ __PACKAGE__->has_many(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07010 @ 2011-04-28 08:14:16
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:55T3c1+d7MIZobGbA6khqg
+# Created by DBIx::Class::Schema::Loader v0.07010 @ 2011-04-28 10:07:42
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:mWhJLF3MBEoxJwN3qRnOEQ
 
 __PACKAGE__->many_to_many(books => 'book_authors', 'book');
+
+#
+# Row-level helper methods
+#
+sub full_name {
+    my ($self) = @_;
+
+    return $self->first_name . ' ' . $self->last_name;
+}
+
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration
 __PACKAGE__->meta->make_immutable;
