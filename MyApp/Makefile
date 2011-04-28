@@ -15,16 +15,16 @@
 #     AUTHOR => q[shabble]
 #     BUILD_REQUIRES => { Test::More=>q[0.88], ExtUtils::MakeMaker=>q[6.42] }
 #     DISTNAME => q[MyApp]
-#     EXE_FILES => [q[script/myapp_cgi.pl], q[script/myapp_create.pl], q[script/myapp_fastcgi.pl], q[script/myapp_server.pl], q[script/myapp_test.pl]]
+#     EXE_FILES => [q[script/myapp_cgi.pl], q[script/myapp_create.pl], q[script/myapp_fastcgi.pl], q[script/myapp_server.pl], q[script/myapp_test.pl], q[script/set_hashed_pw.pl]]
 #     LICENSE => q[perl]
 #     NAME => q[MyApp]
 #     NO_META => q[1]
-#     PREREQ_PM => { namespace::autoclean=>q[0], Catalyst::Plugin::Static::Simple=>q[0], ExtUtils::MakeMaker=>q[6.42], Catalyst::Plugin::ConfigLoader=>q[0], Catalyst::Action::RenderView=>q[0], Test::More=>q[0.88], Config::General=>q[0], Catalyst::Runtime=>q[5.80032], Moose=>q[0] }
+#     PREREQ_PM => { Catalyst::Plugin::ConfigLoader=>q[0], Perl6::Junction=>q[0], Catalyst::Plugin::Session::Store::FastMmap=>q[0], Catalyst::Plugin::Authorization::Roles=>q[0], Catalyst::Plugin::Session::State::Cookie=>q[0], Config::General=>q[0], Moose=>q[0], namespace::autoclean=>q[0], Catalyst::Plugin::Static::Simple=>q[0], ExtUtils::MakeMaker=>q[6.42], Catalyst::Plugin::StackTrace=>q[0], Catalyst::Plugin::Session=>q[0], Catalyst::Action::RenderView=>q[0], Test::More=>q[0.88], Catalyst::Plugin::Authentication=>q[0], Catalyst::Authentication::Realm::SimpleDB=>q[0], Catalyst::Runtime=>q[5.80032] }
 #     VERSION => q[0.01]
 #     VERSION_FROM => q[lib/MyApp.pm]
 #     dist => { PREOP=>q[$(PERL) -I. "-MModule::Install::Admin" -e "dist_preop(q($(DISTVNAME)))"] }
 #     realclean => { FILES=>q[MYMETA.yml] }
-#     test => { TESTS=>q[t/01app.t t/02pod.t t/03podcoverage.t] }
+#     test => { TESTS=>q[t/01app.t t/02pod.t t/03podcoverage.t t/controller_Books.t t/controller_Login.t t/controller_Logout.t t/model_DB.t t/view_HTML.t] }
 
 # --- MakeMaker post_initialize section:
 
@@ -172,7 +172,19 @@ MAN1PODS = script/myapp_cgi.pl \
 	script/myapp_server.pl \
 	script/myapp_test.pl
 MAN3PODS = lib/MyApp.pm \
-	lib/MyApp/Controller/Root.pm
+	lib/MyApp/Controller/Books.pm \
+	lib/MyApp/Controller/Login.pm \
+	lib/MyApp/Controller/Logout.pm \
+	lib/MyApp/Controller/Root.pm \
+	lib/MyApp/Model/DB.pm \
+	lib/MyApp/Schema/Result/Author.pm \
+	lib/MyApp/Schema/Result/Book.pm \
+	lib/MyApp/Schema/Result/BookAuthor.pm \
+	lib/MyApp/Schema/Result/Role.pm \
+	lib/MyApp/Schema/Result/User.pm \
+	lib/MyApp/Schema/Result/UserRole.pm \
+	lib/MyApp/Schema/ResultSet/Book.pm \
+	lib/MyApp/View/HTML.pm
 
 # Where is the Config information that we are using/depend on
 CONFIGDEP = $(PERL_ARCHLIB)$(DFSEP)Config.pm $(PERL_INC)$(DFSEP)config.h
@@ -195,12 +207,54 @@ PERL_ARCHIVE_AFTER =
 
 
 TO_INST_PM = lib/MyApp.pm \
-	lib/MyApp/Controller/Root.pm
+	lib/MyApp/Controller/Books.pm \
+	lib/MyApp/Controller/Login.pm \
+	lib/MyApp/Controller/Logout.pm \
+	lib/MyApp/Controller/Root.pm \
+	lib/MyApp/Model/DB.pm \
+	lib/MyApp/Model/DB.pm.new \
+	lib/MyApp/Schema.pm \
+	lib/MyApp/Schema/Result/Author.pm \
+	lib/MyApp/Schema/Result/Book.pm \
+	lib/MyApp/Schema/Result/BookAuthor.pm \
+	lib/MyApp/Schema/Result/Role.pm \
+	lib/MyApp/Schema/Result/User.pm \
+	lib/MyApp/Schema/Result/UserRole.pm \
+	lib/MyApp/Schema/ResultSet/Book.pm \
+	lib/MyApp/View/HTML.pm
 
-PM_TO_BLIB = lib/MyApp/Controller/Root.pm \
-	blib/lib/MyApp/Controller/Root.pm \
+PM_TO_BLIB = lib/MyApp/Model/DB.pm \
+	blib/lib/MyApp/Model/DB.pm \
+	lib/MyApp/Controller/Books.pm \
+	blib/lib/MyApp/Controller/Books.pm \
+	lib/MyApp/Controller/Logout.pm \
+	blib/lib/MyApp/Controller/Logout.pm \
 	lib/MyApp.pm \
-	blib/lib/MyApp.pm
+	blib/lib/MyApp.pm \
+	lib/MyApp/Controller/Login.pm \
+	blib/lib/MyApp/Controller/Login.pm \
+	lib/MyApp/Schema/Result/UserRole.pm \
+	blib/lib/MyApp/Schema/Result/UserRole.pm \
+	lib/MyApp/Schema.pm \
+	blib/lib/MyApp/Schema.pm \
+	lib/MyApp/View/HTML.pm \
+	blib/lib/MyApp/View/HTML.pm \
+	lib/MyApp/Schema/Result/User.pm \
+	blib/lib/MyApp/Schema/Result/User.pm \
+	lib/MyApp/Schema/Result/Role.pm \
+	blib/lib/MyApp/Schema/Result/Role.pm \
+	lib/MyApp/Schema/Result/Book.pm \
+	blib/lib/MyApp/Schema/Result/Book.pm \
+	lib/MyApp/Controller/Root.pm \
+	blib/lib/MyApp/Controller/Root.pm \
+	lib/MyApp/Model/DB.pm.new \
+	blib/lib/MyApp/Model/DB.pm.new \
+	lib/MyApp/Schema/Result/Author.pm \
+	blib/lib/MyApp/Schema/Result/Author.pm \
+	lib/MyApp/Schema/Result/BookAuthor.pm \
+	blib/lib/MyApp/Schema/Result/BookAuthor.pm \
+	lib/MyApp/Schema/ResultSet/Book.pm \
+	blib/lib/MyApp/Schema/ResultSet/Book.pm
 
 
 # --- MakeMaker platform_constants section:
@@ -427,8 +481,20 @@ manifypods : pure_all  \
 	script/myapp_cgi.pl \
 	script/myapp_fastcgi.pl \
 	script/myapp_test.pl \
+	lib/MyApp/Model/DB.pm \
+	lib/MyApp/Controller/Books.pm \
+	lib/MyApp/Controller/Logout.pm \
+	lib/MyApp.pm \
+	lib/MyApp/Controller/Login.pm \
+	lib/MyApp/Schema/Result/UserRole.pm \
+	lib/MyApp/View/HTML.pm \
+	lib/MyApp/Schema/Result/User.pm \
+	lib/MyApp/Schema/Result/Role.pm \
+	lib/MyApp/Schema/Result/Book.pm \
 	lib/MyApp/Controller/Root.pm \
-	lib/MyApp.pm
+	lib/MyApp/Schema/Result/Author.pm \
+	lib/MyApp/Schema/Result/BookAuthor.pm \
+	lib/MyApp/Schema/ResultSet/Book.pm
 	$(NOECHO) $(POD2MAN) --section=1 --perm_rw=$(PERM_RW) \
 	  script/myapp_server.pl $(INST_MAN1DIR)/myapp_server.pl.$(MAN1EXT) \
 	  script/myapp_create.pl $(INST_MAN1DIR)/myapp_create.pl.$(MAN1EXT) \
@@ -436,8 +502,20 @@ manifypods : pure_all  \
 	  script/myapp_fastcgi.pl $(INST_MAN1DIR)/myapp_fastcgi.pl.$(MAN1EXT) \
 	  script/myapp_test.pl $(INST_MAN1DIR)/myapp_test.pl.$(MAN1EXT) 
 	$(NOECHO) $(POD2MAN) --section=3 --perm_rw=$(PERM_RW) \
+	  lib/MyApp/Model/DB.pm $(INST_MAN3DIR)/MyApp::Model::DB.$(MAN3EXT) \
+	  lib/MyApp/Controller/Books.pm $(INST_MAN3DIR)/MyApp::Controller::Books.$(MAN3EXT) \
+	  lib/MyApp/Controller/Logout.pm $(INST_MAN3DIR)/MyApp::Controller::Logout.$(MAN3EXT) \
+	  lib/MyApp.pm $(INST_MAN3DIR)/MyApp.$(MAN3EXT) \
+	  lib/MyApp/Controller/Login.pm $(INST_MAN3DIR)/MyApp::Controller::Login.$(MAN3EXT) \
+	  lib/MyApp/Schema/Result/UserRole.pm $(INST_MAN3DIR)/MyApp::Schema::Result::UserRole.$(MAN3EXT) \
+	  lib/MyApp/View/HTML.pm $(INST_MAN3DIR)/MyApp::View::HTML.$(MAN3EXT) \
+	  lib/MyApp/Schema/Result/User.pm $(INST_MAN3DIR)/MyApp::Schema::Result::User.$(MAN3EXT) \
+	  lib/MyApp/Schema/Result/Role.pm $(INST_MAN3DIR)/MyApp::Schema::Result::Role.$(MAN3EXT) \
+	  lib/MyApp/Schema/Result/Book.pm $(INST_MAN3DIR)/MyApp::Schema::Result::Book.$(MAN3EXT) \
 	  lib/MyApp/Controller/Root.pm $(INST_MAN3DIR)/MyApp::Controller::Root.$(MAN3EXT) \
-	  lib/MyApp.pm $(INST_MAN3DIR)/MyApp.$(MAN3EXT) 
+	  lib/MyApp/Schema/Result/Author.pm $(INST_MAN3DIR)/MyApp::Schema::Result::Author.$(MAN3EXT) \
+	  lib/MyApp/Schema/Result/BookAuthor.pm $(INST_MAN3DIR)/MyApp::Schema::Result::BookAuthor.$(MAN3EXT) \
+	  lib/MyApp/Schema/ResultSet/Book.pm $(INST_MAN3DIR)/MyApp::Schema::ResultSet::Book.$(MAN3EXT) 
 
 
 
@@ -447,16 +525,16 @@ manifypods : pure_all  \
 
 # --- MakeMaker installbin section:
 
-EXE_FILES = script/myapp_cgi.pl script/myapp_create.pl script/myapp_fastcgi.pl script/myapp_server.pl script/myapp_test.pl
+EXE_FILES = script/myapp_cgi.pl script/myapp_create.pl script/myapp_fastcgi.pl script/myapp_server.pl script/myapp_test.pl script/set_hashed_pw.pl
 
-pure_all :: $(INST_SCRIPT)/myapp_server.pl $(INST_SCRIPT)/myapp_create.pl $(INST_SCRIPT)/myapp_cgi.pl $(INST_SCRIPT)/myapp_fastcgi.pl $(INST_SCRIPT)/myapp_test.pl
+pure_all :: $(INST_SCRIPT)/myapp_server.pl $(INST_SCRIPT)/myapp_create.pl $(INST_SCRIPT)/set_hashed_pw.pl $(INST_SCRIPT)/myapp_cgi.pl $(INST_SCRIPT)/myapp_fastcgi.pl $(INST_SCRIPT)/myapp_test.pl
 	$(NOECHO) $(NOOP)
 
 realclean ::
 	$(RM_F) \
 	  $(INST_SCRIPT)/myapp_server.pl $(INST_SCRIPT)/myapp_create.pl \
-	  $(INST_SCRIPT)/myapp_cgi.pl $(INST_SCRIPT)/myapp_fastcgi.pl \
-	  $(INST_SCRIPT)/myapp_test.pl 
+	  $(INST_SCRIPT)/set_hashed_pw.pl $(INST_SCRIPT)/myapp_cgi.pl \
+	  $(INST_SCRIPT)/myapp_fastcgi.pl $(INST_SCRIPT)/myapp_test.pl 
 
 $(INST_SCRIPT)/myapp_server.pl : script/myapp_server.pl $(FIRST_MAKEFILE) $(INST_SCRIPT)$(DFSEP).exists $(INST_BIN)$(DFSEP).exists
 	$(NOECHO) $(RM_F) $(INST_SCRIPT)/myapp_server.pl
@@ -469,6 +547,12 @@ $(INST_SCRIPT)/myapp_create.pl : script/myapp_create.pl $(FIRST_MAKEFILE) $(INST
 	$(CP) script/myapp_create.pl $(INST_SCRIPT)/myapp_create.pl
 	$(FIXIN) $(INST_SCRIPT)/myapp_create.pl
 	-$(NOECHO) $(CHMOD) $(PERM_RWX) $(INST_SCRIPT)/myapp_create.pl
+
+$(INST_SCRIPT)/set_hashed_pw.pl : script/set_hashed_pw.pl $(FIRST_MAKEFILE) $(INST_SCRIPT)$(DFSEP).exists $(INST_BIN)$(DFSEP).exists
+	$(NOECHO) $(RM_F) $(INST_SCRIPT)/set_hashed_pw.pl
+	$(CP) script/set_hashed_pw.pl $(INST_SCRIPT)/set_hashed_pw.pl
+	$(FIXIN) $(INST_SCRIPT)/set_hashed_pw.pl
+	-$(NOECHO) $(CHMOD) $(PERM_RWX) $(INST_SCRIPT)/set_hashed_pw.pl
 
 $(INST_SCRIPT)/myapp_cgi.pl : script/myapp_cgi.pl $(FIRST_MAKEFILE) $(INST_SCRIPT)$(DFSEP).exists $(INST_BIN)$(DFSEP).exists
 	$(NOECHO) $(RM_F) $(INST_SCRIPT)/myapp_cgi.pl
@@ -806,7 +890,7 @@ $(MAKE_APERL_FILE) : $(FIRST_MAKEFILE) pm_to_blib
 TEST_VERBOSE=0
 TEST_TYPE=test_$(LINKTYPE)
 TEST_FILE = test.pl
-TEST_FILES = t/01app.t t/02pod.t t/03podcoverage.t
+TEST_FILES = t/01app.t t/02pod.t t/03podcoverage.t t/controller_Books.t t/controller_Login.t t/controller_Logout.t t/model_DB.t t/view_HTML.t
 TESTDB_SW = -d
 
 testdb :: testdb_$(LINKTYPE)
@@ -837,11 +921,19 @@ ppd :
 	$(NOECHO) $(ECHO) '    <AUTHOR>shabble</AUTHOR>' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '    <IMPLEMENTATION>' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '        <REQUIRE NAME="Catalyst::Action::RenderView" />' >> $(DISTNAME).ppd
+	$(NOECHO) $(ECHO) '        <REQUIRE NAME="Catalyst::Authentication::Realm::SimpleDB" />' >> $(DISTNAME).ppd
+	$(NOECHO) $(ECHO) '        <REQUIRE NAME="Catalyst::Plugin::Authentication" />' >> $(DISTNAME).ppd
+	$(NOECHO) $(ECHO) '        <REQUIRE NAME="Catalyst::Plugin::Authorization::Roles" />' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '        <REQUIRE NAME="Catalyst::Plugin::ConfigLoader" />' >> $(DISTNAME).ppd
+	$(NOECHO) $(ECHO) '        <REQUIRE NAME="Catalyst::Plugin::Session" />' >> $(DISTNAME).ppd
+	$(NOECHO) $(ECHO) '        <REQUIRE NAME="Catalyst::Plugin::Session::State::Cookie" />' >> $(DISTNAME).ppd
+	$(NOECHO) $(ECHO) '        <REQUIRE NAME="Catalyst::Plugin::Session::Store::FastMmap" />' >> $(DISTNAME).ppd
+	$(NOECHO) $(ECHO) '        <REQUIRE NAME="Catalyst::Plugin::StackTrace" />' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '        <REQUIRE NAME="Catalyst::Plugin::Static::Simple" />' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '        <REQUIRE NAME="Catalyst::Runtime" VERSION="5.80032" />' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '        <REQUIRE NAME="Config::General" />' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '        <REQUIRE NAME="Moose::" />' >> $(DISTNAME).ppd
+	$(NOECHO) $(ECHO) '        <REQUIRE NAME="Perl6::Junction" />' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '        <REQUIRE NAME="namespace::autoclean" />' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '        <ARCHITECTURE NAME="darwin-multi-2level-5.12" />' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '        <CODEBASE HREF="" />' >> $(DISTNAME).ppd
@@ -853,8 +945,22 @@ ppd :
 
 pm_to_blib : $(FIRST_MAKEFILE) $(TO_INST_PM)
 	$(NOECHO) $(ABSPERLRUN) -MExtUtils::Install -e 'pm_to_blib({@ARGV}, '\''$(INST_LIB)/auto'\'', q[$(PM_FILTER)], '\''$(PERM_DIR)'\'')' -- \
+	  lib/MyApp/Model/DB.pm blib/lib/MyApp/Model/DB.pm \
+	  lib/MyApp/Controller/Books.pm blib/lib/MyApp/Controller/Books.pm \
+	  lib/MyApp/Controller/Logout.pm blib/lib/MyApp/Controller/Logout.pm \
+	  lib/MyApp.pm blib/lib/MyApp.pm \
+	  lib/MyApp/Controller/Login.pm blib/lib/MyApp/Controller/Login.pm \
+	  lib/MyApp/Schema/Result/UserRole.pm blib/lib/MyApp/Schema/Result/UserRole.pm \
+	  lib/MyApp/Schema.pm blib/lib/MyApp/Schema.pm \
+	  lib/MyApp/View/HTML.pm blib/lib/MyApp/View/HTML.pm \
+	  lib/MyApp/Schema/Result/User.pm blib/lib/MyApp/Schema/Result/User.pm \
+	  lib/MyApp/Schema/Result/Role.pm blib/lib/MyApp/Schema/Result/Role.pm \
+	  lib/MyApp/Schema/Result/Book.pm blib/lib/MyApp/Schema/Result/Book.pm \
 	  lib/MyApp/Controller/Root.pm blib/lib/MyApp/Controller/Root.pm \
-	  lib/MyApp.pm blib/lib/MyApp.pm 
+	  lib/MyApp/Model/DB.pm.new blib/lib/MyApp/Model/DB.pm.new \
+	  lib/MyApp/Schema/Result/Author.pm blib/lib/MyApp/Schema/Result/Author.pm \
+	  lib/MyApp/Schema/Result/BookAuthor.pm blib/lib/MyApp/Schema/Result/BookAuthor.pm \
+	  lib/MyApp/Schema/ResultSet/Book.pm blib/lib/MyApp/Schema/ResultSet/Book.pm 
 	$(NOECHO) $(TOUCH) pm_to_blib
 
 

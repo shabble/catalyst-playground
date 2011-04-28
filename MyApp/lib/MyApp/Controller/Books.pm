@@ -52,10 +52,41 @@ sub list : Local {
 }
 
 =head2 url_create
-    
-Create a book with the supplied title, rating, and author
+
+Create a book with the supplied title and rating,
+with manual authorization
 
 =cut
+
+sub url_create :Chained('base') :PathPart('url_create') :Args(3) {
+    # In addition to self & context, get the title, rating & author_id args
+    # from the URL.  Note that Catalyst automatically puts extra information
+    # after the "/<controller_name>/<action_name/" into @_
+    my ($self, $c, $title, $rating, $author_id) = @_;
+
+    # Check the user's roles
+    if ($c->check_user_roles('admin')) {
+        # Call create() on the book model object. Pass the table
+        # columns/field values we want to set as hash values
+        my $book = $c->model('DB::Book')->create({
+                title   => $title,
+                rating  => $rating
+            });
+
+        # Add a record to the join table for this book, mapping to
+        # appropriate author
+        $book->add_to_book_authors({author_id => $author_id});
+        # Note: Above is a shortcut for this:
+        # $book->create_related('book_authors', {author_id => $author_id});
+
+        # Assign the Book object to the stash and set template
+        $c->stash(book     => $book,
+                  template => 'books/create_done.tt2');
+    } else {
+        # Provide very simple feedback to the user.
+        $c->response->body('Unauthorized!');
+    }
+}
 
 =head2 base
 
@@ -71,32 +102,6 @@ sub base :Chained('/') :PathPart('books') :CaptureArgs(0) {
 
     # Print a message to the debug log
     $c->log->debug('*** INSIDE BASE METHOD ***');
-}
-
-sub url_create :Chained('base') :PathPart('url_create') :Args(3) {
-    # In addition to self & context, get the title, rating, &
-    # author_id args from the URL.  Note that Catalyst automatically
-    # puts extra information after the "/<controller_name>/<action_name/"
-    # into @_.  The args are separated  by the '/' char on the URL.
-
-    my ($self, $c, $title, $rating, $author_id) = @_;
-
-    # Call create() on the book model object. Pass the table
-    # columns/field values we want to set as hash values
-    my $book = $c->model('DB::Book')->create({
-                                              title  => $title,
-                                              rating => $rating
-                                             });
-
-    # Add a record to the join table for this book, mapping to
-    # appropriate author
-    $book->add_to_book_authors({author_id => $author_id});
-    # Note: Above is a shortcut for this:
-    # $book->create_related('book_authors', {author_id => $author_id});
-
-    # Assign the Book object to the stash for display and set template
-    $c->stash(book     => $book,
-              template => 'books/create_done.tt2');
 }
 
 =head2 form_create
@@ -168,7 +173,6 @@ sub object :Chained('base') :PathPart('id') :CaptureArgs(1) {
     $c->log->debug("*** INSIDE OBJECT METHOD for obj id=$id ***");
 }
 
-
 =head2 delete
 
 Delete a book
@@ -178,19 +182,23 @@ Delete a book
 sub delete :Chained('object') :PathPart('delete') :Args(0) {
     my ($self, $c) = @_;
 
+    # Check permissions
+    $c->detach('/error_noperms')
+        unless $c->stash->{object}->delete_allowed_by($c->user->get_object);
+
     # Use the book object saved by 'object' and delete it along
-    # with related 'book_author' entries
+    # with related 'book_authors' entries
     $c->stash->{object}->delete;
 
-    # # Set a status message to be displayed at the top of the view
-    # $c->stash->{status_msg} = "Book deleted.";
     # Use 'flash' to save information across requests until it's read
     $c->flash->{status_msg} = "Book deleted";
 
-    # Forward to the list action/method in this controller
+    # Redirect the user back to the list page
     $c->response->redirect($c->uri_for($self->action_for('list')));
-    #{status_msg => "Book deleted."}));
 }
+
+
+
 
 =head2 list_recent
 

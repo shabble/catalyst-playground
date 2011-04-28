@@ -124,7 +124,7 @@ Return a comma-separated list of authors for the current book
 sub author_list {
     my ($self) = @_;
 
-    # Loop through all authors for the current book, calling all the 'full_name' 
+    # Loop through all authors for the current book, calling all the 'full_name'
     # Result Class method for each
     my @names;
     foreach my $author ($self->authors) {
@@ -134,6 +134,18 @@ sub author_list {
     return join(', ', @names);
 }
 
+=head2 delete_allowed_by
+
+Can the specified user delete the current book?
+
+=cut
+
+sub delete_allowed_by {
+    my ($self, $user) = @_;
+
+    # Only allow delete if user has 'admin' role
+    return $user->has_role('admin');
+}
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration
 __PACKAGE__->meta->make_immutable;
