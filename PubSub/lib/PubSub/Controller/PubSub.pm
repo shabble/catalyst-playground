@@ -24,7 +24,8 @@ Catalyst Controller.
 sub index :Path :Args(0) {
     my ( $self, $c ) = @_;
 
-    $c->response->body('Matched PubSub::Controller::PubSub in PubSub.');
+    #$c->forward('subscribe.tt2')
+    $c->stash(template => 'subscribe.tt2');
 }
 
 sub subscribe :Path :Args(0) {

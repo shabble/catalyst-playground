@@ -5,9 +5,12 @@ use warnings;
 
 use base 'Catalyst::View::TT';
 
-__PACKAGE__->config(
-    TEMPLATE_EXTENSION => '.tt',
-    render_die => 1,
+__PACKAGE__->config
+  (
+   render_die         => 1,
+   INCLUDE_PATH       => [ MyApp->path_to('root', 'src') ],
+   TIMER              => 1,
+   WRAPPER            => 'wrapper.tt2',
 );
 
 =head1 NAME
