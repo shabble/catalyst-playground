@@ -18,7 +18,7 @@ use Catalyst::Runtime 5.80;
 
 use Catalyst
   (
-#   '-Debug',
+   '-Debug',
    'ConfigLoader',
    'Static::Simple',
    'StackTrace',
