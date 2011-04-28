@@ -16,17 +16,21 @@ Catalyst Controller.
 
 =cut
 
-
 =head2 index
+
+Logout logic
 
 =cut
 
 sub index :Path :Args(0) {
-    my ( $self, $c ) = @_;
+    my ($self, $c) = @_;
 
-    $c->response->body('Matched MyApp::Controller::Logout in Logout.');
+    # Clear the user's state
+    $c->logout;
+
+    # Send the user to the starting point
+    $c->response->redirect($c->uri_for('/'));
 }
-
 
 =head1 AUTHOR
 
