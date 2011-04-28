@@ -1,4 +1,4 @@
-[% META title = 'Manual Form Book Create' -%]
+[% META title = 'PubSub Subscription Page' -%]
 
 <form method="post" action="[% c.uri_for('subscription_create_do') %]">
 <table>

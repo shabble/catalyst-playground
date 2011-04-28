@@ -8,7 +8,7 @@ use base 'Catalyst::View::TT';
 __PACKAGE__->config
   (
    render_die         => 1,
-   INCLUDE_PATH       => [ MyApp->path_to('root', 'src') ],
+   INCLUDE_PATH       => [ PubSub->path_to('root', 'src') ],
    TIMER              => 1,
    WRAPPER            => 'wrapper.tt2',
 );

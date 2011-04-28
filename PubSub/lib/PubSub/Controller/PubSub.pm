@@ -21,11 +21,11 @@ Catalyst Controller.
 
 =cut
 
-sub index :Path :Args(0) {
+sub index :Path('/') :Args(0) {
     my ( $self, $c ) = @_;
 
     #$c->forward('subscribe.tt2')
-    $c->stash(template => 'subscribe.tt2');
+    $c->stash(template => 'PubSub/subscribe.tt2');
 }
 
 sub subscribe :Path :Args(0) {
