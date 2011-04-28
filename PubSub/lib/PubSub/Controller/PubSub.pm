@@ -27,6 +27,15 @@ sub index :Path :Args(0) {
     $c->response->body('Matched PubSub::Controller::PubSub in PubSub.');
 }
 
+sub subscribe :Path :Args(0) {
+    my ($self, $c) = @_;
+}
+
+sub unsubscribe :Path :Args(0) {
+    my ($self, $c) = @_;
+
+}
+
 
 =head1 AUTHOR
 

@@ -16,11 +16,18 @@ use Catalyst::Runtime 5.80;
 # Static::Simple: will serve static files from the application's root
 #                 directory
 
-use Catalyst qw/
-    -Debug
-    ConfigLoader
-    Static::Simple
-/;
+use Catalyst
+  (
+   '-Debug',
+   'ConfigLoader',
+   'Static::Simple',
+   'StackTrace',
+
+   'Session',
+   'Session::Store::FastMmap',
+   'Session::State::Cookie',
+
+  );
 
 extends 'Catalyst';
 
@@ -35,11 +42,13 @@ our $VERSION = '0.01';
 # with an external configuration file acting as an override for
 # local deployment.
 
-__PACKAGE__->config(
-    name => 'PubSub',
-    # Disable deprecated behavior needed by old applications
-    disable_component_resolution_regex_fallback => 1,
-);
+__PACKAGE__->config
+  (
+   name => 'PubSub',
+   # Disable deprecated behavior needed by old applications
+   disable_component_resolution_regex_fallback => 1,
+   session => { flash_to_stash => 1 },
+  );
 
 # Start the application
 __PACKAGE__->setup();
