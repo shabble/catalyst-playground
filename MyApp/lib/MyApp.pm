@@ -24,10 +24,14 @@ use Catalyst
    'StackTrace',
 
    'Authentication',
+   'Authorization::Roles',
 
    'Session',
    'Session::Store::FastMmap',
    'Session::State::Cookie',
+
+
+
   );
 
 
