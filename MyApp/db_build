@@ -1,0 +1,12 @@
+#!/bin/bash
+
+DB="db/myapp.db"
+SQL_FILES="sql/*.sql"
+S3="/opt/local/bin/sqlite3"
+
+for sql in ${SQL_FILES}; do
+    echo "Doing: $sql"
+    $S3 $DB < $sql
+done
+
+echo "Finished importing database files"
