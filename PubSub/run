@@ -1,0 +1,13 @@
+#!/bin/sh
+
+ARGS="$@"
+
+if [[ "$ARGS" =~ '-t' ]]; then
+
+    echo "${C_Green}${C_Bold}Enabling DBIC Tracing${C_Reset}"
+
+    export DBIC_TRACE=1
+    ARGS=${ARGS/-t/} # remove teh argument
+fi
+# use -d in place of -Debug in MyApp.pm
+exec script/pubsub_server.pl -r -d $ARGS
