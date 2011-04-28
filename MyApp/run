@@ -1,3 +1,4 @@
 #!/bin/sh
 
-exec script/myapp_server.pl -r $@
+# use -d in place of -Debug in MyApp.pm
+exec script/myapp_server.pl -r -d $@
