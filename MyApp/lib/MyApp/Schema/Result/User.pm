@@ -109,6 +109,18 @@ __PACKAGE__->has_many(
 
 __PACKAGE__->many_to_many(roles => 'user_roles', 'role');
 
+# Have the 'password' column use a SHA-1 hash and 10-character salt
+# with hex encoding; Generate the 'check_password" method
+__PACKAGE__->add_columns
+  (
+   'password' => {
+                  encode_column       => 1,
+                  encode_class        => 'Crypt::Eksblowfish::Bcrypt',
+                  encode_args         => { salt_length => 10, format => 'hex' },
+                  encode_check_method => 'check_password',
+                 },
+  );
+
 # You can replace this text with custom code or comments, and it will be preserved on regeneration
 __PACKAGE__->meta->make_immutable;
 1;
