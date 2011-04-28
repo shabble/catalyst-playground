@@ -1,8 +1,10 @@
 use strict;
 use warnings;
 use Test::More;
-use Test::More;
 
-BEGIN { use_ok 'MyApp::View::HTML' }
+BEGIN {
+    use_ok 'MyApp';
+    use_ok 'MyApp::View::HTML';
+}
 
 done_testing();
