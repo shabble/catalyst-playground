@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DB="db/myapp.db"
+DB="db/pubsub.db"
 SQL_FILES="sql/*.sql"
 S3="/opt/local/bin/sqlite3"
 
@@ -12,3 +12,9 @@ done
 echo "Finished importing database files"
 #perl script/set_hashed_pw.pl
 #echo "Hashed passwords using Bcrypt"
+
+script/pubsub_create.pl  model DB DBIC::Schema PubSub::Schema \
+        create=static "dbi:SQLite:db/pubsub.db" \
+        on_connect_do="PRAGMA foreign_keys = ON"
+
+echo "Created Schema"
