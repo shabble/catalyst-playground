@@ -51,6 +51,40 @@ sub test :Path('/test') :Args(0) {
     $c->stash(template => 'PubSub/test.tt2');
 }
 
+sub subscription_create :Local :Args(0) {
+    my ($self, $c) = @_;
+
+    my $src  = $c->request->params->{source};
+    my $hub  = $c->request->params->{hub};
+    my $call = $c->request->params->{callback};
+
+    my $subs = $c->model('DB::Subscription');
+
+    my $backend = $c->model('PubSub::BackEnd');
+    my $params  = $backend->prepare_data($hub, $src, 'verify', $call);
+
+
+    my $new = $subs->create
+      ({
+        source => $src,
+        status => 'pending',
+        uuid   => $params->{'hub.verify_token'},
+        topic  => $src
+       });
+
+    my $res = $backend->post_request_source($hub, $params);
+
+    if ($res->code == 202 or $res->code == 204) {
+        $c->log->warn("Created!");
+    } else {
+        $c->log->warn("Failed");
+    }
+
+    $c->stash(query_result => $res, obj => $new);
+    $c->stash(template => 'PubSub/subscription_create.tt2');
+}
+
+
 sub subscribe :Path :Args(0) {
     my ($self, $c) = @_;
 }

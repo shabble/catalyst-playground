@@ -1,10 +1,14 @@
 [% META title = 'PubSub Subscription Page' -%]
 
-<form method="post" action="[% c.uri_for('subscription_create_do') %]">
+<form method="post" action="[% c.uri_for('subscription_create') %]">
 <table>
-  <tr><td>Source:</td><td><input type="text" name="source"></td></tr>
-  <tr><td>Hub:</td><td><input type="text" name="hub"></td></tr>
-  <tr><td>Callback:</td><td><input type="text" name="callback"></td></tr>
+  <tr><td>Source:</td><td><input 
+                             type="text" 
+                             name="source"
+                             value="https://github.com/shabble.private.atom?token=df5267b5c730020e8efe9b27a539521e" /></td></tr>
+  <tr><td>Hub:</td><td><input type="text" name="hub"
+  value="https://pubsubhubbub.appspot.com/subscribe" /></td></tr>
+  <tr><td>Callback:</td><td><input type="text" name="callback" value="http://metavore.org:3000/callback"></td></tr>
 </table>
 <input type="submit" name="Submit" value="Submit">
 </form>
