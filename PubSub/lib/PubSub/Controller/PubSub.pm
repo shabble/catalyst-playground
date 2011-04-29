@@ -4,6 +4,8 @@ use namespace::autoclean;
 
 BEGIN {extends 'Catalyst::Controller'; }
 
+use Data::Dumper;
+
 =head1 NAME
 
 PubSub::Controller::PubSub - Catalyst Controller
@@ -28,6 +30,27 @@ sub index :Path('/') :Args(0) {
     $c->stash(template => 'PubSub/subscribe.tt2');
 }
 
+
+sub test :Path('/test') :Args(0) {
+    my ($self, $c) = @_;
+
+    my $be = $c->model('PubSub::BackEnd');
+
+    my @things = (
+                "http://www.example.com",
+                "thingie",
+                "subscribe",
+                "http://localhost:300/callback"
+               );
+
+    my $data = $be->prepare_data(@things);
+
+    #$c->log->info(Dumper($data));
+
+    $c->stash(hubdata => $data);
+    $c->stash(template => 'PubSub/test.tt2');
+}
+
 sub subscribe :Path :Args(0) {
     my ($self, $c) = @_;
 }
@@ -37,17 +60,13 @@ sub unsubscribe :Path :Args(0) {
 
 }
 
+sub callback :Path('/callback') :Args(1) {
+    my ($self, $c, $data) = @_;
 
-=head1 AUTHOR
 
-shabble
+    $c->log->warn("Got callback: $data");
+}
 
-=head1 LICENSE
-
-This library is free software. You can redistribute it and/or modify
-it under the same terms as Perl itself.
-
-=cut
 
 __PACKAGE__->meta->make_immutable;
 

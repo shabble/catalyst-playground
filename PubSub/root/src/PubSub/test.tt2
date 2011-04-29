@@ -1,0 +1,11 @@
+<h1>Testng Page</h1>
+
+    <table>
+    <tr><th>Key</th><th>Value</th></tr>
+    [% FOREACH datum IN hubdata.keys -%]
+      <tr>
+        <td>[% datum %]</td>
+        <td>[% hubdata.$datum %]</td>
+      </tr>
+    [% END -%]
+    </table>

@@ -4,24 +4,47 @@ use namespace::autoclean;
 
 extends 'Catalyst::Model';
 
-=head1 NAME
+use LWP;
+use LWP::UserAgent;
+use UUID::Random;
 
-PubSub::Model::PubSub::BackEnd - Catalyst Model
+sub send_hub_request {
+    my ($self) = @_;
 
-=head1 DESCRIPTION
+}
 
-Catalyst Model.
 
-=head1 AUTHOR
+sub prepare_data {
+    my ($self, $hub, $topic, $mode, $callback) = @_;
 
-shabble
+    my $token = UUID::Random->generate();
 
-=head1 LICENSE
+    my $data
+      = {
+         'hub.callback'      => $callback,
+         'hub.mode'          => $mode,
+         'hub.topic'         => $topic,
+         'hub.verify'        => 'async',
+         'hub.lease_seconds' => '',
+         'hub.verify_token'  => $token
+        };
 
-This library is free software. You can redistribute it and/or modify
-it under the same terms as Perl itself.
+    return $data;
+}
 
-=cut
+sub post_request_source {
+    my ($hub_url, $data) = @_;
+
+    my $ua = LWP::UserAgent->new;
+    $ua->agent("ShabApp/0.1");
+
+    my $response = $ua->post($hub_url, $data);
+
+    if ($response->code == 202 or $response->code == 204) {
+    } else {
+        # something fucked up.
+    }
+}
 
 __PACKAGE__->meta->make_immutable;
 
