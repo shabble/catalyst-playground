@@ -1,0 +1,6 @@
+<h2>Yay<h2>
+<p>Status of request was: [% query_result.code %] </p>
+<p>Rest of message was: [% qery_result.content %] </p>
+<p>New object has id: [% obj.id %] and uuid [% obj.uuid %]</p>
+
+<h1>Now What?<h1>
